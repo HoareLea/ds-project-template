@@ -2,9 +2,20 @@
 
 .PHONY: install
 install:
-	pip install -U pip setuptools wheel
-	pip install -e .[dev]
-	pre-commit install
+	# Initialize git repository
+	git init 
+	# Install uv
+	pip install uv 
+	# Build the project
+	uv build
+	# Install dependencies, create venv
+	uv sync 
+	# Install pre-commit hooks
+	pre-commit install 
+	# Add .env file
+	export $(grep -v '^#' .env | xargs)	
+	# Install local package in editable mode
+	uv pip install -e .
 
 {% if cookiecutter.azure_ml_project|lower in ['yes', 'y'] -%}
 
@@ -14,7 +25,11 @@ data-sync-raw:
 
 .PHONY: aml-env-build
 aml-env-build:
-	docker build -f azureml/Dockerfile -t {{cookiecutter.repo_name}}_env .
+	docker build \
+	-f Dockerfile \
+	--target azureml \
+	-t {{cookiecutter.repo_name}}_env \
+	.
 
 .PHONY: aml-env-push
 aml-env-push:
@@ -26,22 +41,38 @@ aml-env-push:
 
 .PHONY: streamlit-build
 streamlit-build:
-	docker build -f app_streamlit/Dockerfile -t {{cookiecutter.repo_name}}_webapp .
+	docker build \
+		-f Dockerfile \
+		--target streamlit \
+		-t {{cookiecutter.repo_name}}_webapp \
+		.
 
 .PHONY: streamlit-run
 streamlit-run:
 	docker run -p 8501:8501 {{cookiecutter.repo_name}}_webapp
+
+.PHONY: kill-streamlit
+kill-streamlit:
+	kill -9 $(lsof -t -i:8501)
 
 {% endif -%}
 {% if cookiecutter.include_fastapi_app|lower in ['yes', 'y'] -%}
 
 .PHONY: fastapi-build
 fastapi-build:
-	docker build -f app_fastapi/Dockerfile -t {{cookiecutter.repo_name}}_api .
+	docker build \
+		-f Dockerfile \
+		--target fastapi \
+		-t {{cookiecutter.repo_name}}_api \
+		.
 
 .PHONY: fastapi-run
 fastapi-run:
 	docker run -p 8000:8000 {{cookiecutter.repo_name}}_api
+
+.PHONY: kill-fastapi
+kill-fastapi:
+	kill -9 $(lsof -t -i:8000)
 
 {% endif -%}
 
@@ -54,15 +85,20 @@ test: install
 test_html: test
 	python -m http.server --directory htmlcov/
 
-.PHONY: lint
-lint:
-	pflake8 .
-
-.PHONY: format
-format:
-	black .
+.PHONY: ruff-fix
+ruff-fix:
+	ruff check --fix
+	ruff format
 
 .PHONY: clean
 clean:
 	find . -type f -name "*.py[co]" -delete
 	find . -type d -name "__pycache__" -delete
+
+.PHONY: docker-clean
+docker-clean:
+	docker system prune
+
+.PHONY: docker-restart
+docker-restart:
+	sudo systemctl restart docker

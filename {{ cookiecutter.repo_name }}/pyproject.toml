@@ -1,54 +1,46 @@
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "{{ cookiecutter.package_name }}"
 version = "0.0.1"
 description = "{{ cookiecutter.description }}"
-authors = [
-  { name = "{{ cookiecutter.author_name }}" }
-]
+authors = [{ name = "{{ cookiecutter.author_name }}" }]
+requires-python = ">={{ cookiecutter.minimum_python_version }}"
 dependencies = [
+  # Packages
+  "app_fastapi",
+  "app_streamlit",
+  "azureml",
+
+  # Global dependencies
   "PyYAML",
-  "python-dotenv",
-  {% if cookiecutter.azure_ml_project|lower in ['y', 'yes'] -%}
-  "azure-ai-ml",
-  "azure-identity",
-  {% endif -%}
+
+  # Conditional dependencies
   {% if cookiecutter.database_type == 'postgres' -%}
   "psycopg2-binary",
   {% elif cookiecutter.database_type == 'mysql' -%}
   "mysql-connector-python",
   {% endif -%}
-
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
-  "black",
   "coverage",
-  "flake8",
-  "pyproject-flake8",
-  "pre-commit",
   "pytest",
+  "ruff",
+  "pre-commit",
 ]
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.uv.sources]
+app_fastapi = { workspace = true }
+app_streamlit = { workspace = true }
+azureml = { workspace = true }
 
-[tool.black]
-line-length = 88
-
-[tool.flake8]
-ignore = ["D203", "W503"]
-max-complexity = 9
-max-line-length = 88
-extend-ignore = ["E203"]
-exclude = [
-    "__pycache__",
-    "venv",
-    ".venv"
+[tool.uv.workspace]
+members = [
+  "packages/app_fastapi",
+  "packages/app_streamlit",
+  "packages/azureml",
 ]
 
-[tool.nbstripout]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
