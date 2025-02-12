@@ -15,7 +15,7 @@ The goal of this template is to maintain modularity and separation of concerns:
    ```
 2. Start a new project. You will be prompted to enter some configuration values.
    ```bash
-   cookiecutter gh:HoareLea/ds-project-template --branch python-template
+   cookiecutter gh:HoareLea/ds-project-template -c python-template
    ```
 
 ## Technologies
