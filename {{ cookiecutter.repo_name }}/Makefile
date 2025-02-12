@@ -4,7 +4,3 @@
 install:
 	pip install -U pip setuptools wheel
 	pip install -e .
-	pip install -r requirements.txt
-
-
-

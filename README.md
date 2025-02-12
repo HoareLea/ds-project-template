@@ -39,6 +39,6 @@ The directory structure of your new project looks like this:
 │       ├── visualise_data.py <- Functions for plotting graphs.
 ├── .gitignore                <- Specify files not to commit to git (e.g. secrets)
 ├── Makefile                  <- Makefile with shortcuts for terminal commands
+├── pyproject.toml            <- Configuration file for project dependencies/settings
 ├── README.md                 <- The top-level README for the project. 
-├── requirements.txt          <- Project dependencies
 ```
