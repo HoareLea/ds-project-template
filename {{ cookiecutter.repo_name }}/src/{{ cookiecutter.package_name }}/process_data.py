@@ -8,7 +8,7 @@ def impute_column(df: pd.DataFrame, column_name: str, impute_mode: str) -> pd.Da
     Arguments:
     df (pd.DataFrame): The DataFrame containing the column to be imputed.
     column_name (str): The name of the column in which to impute missing values.
-    impute_mode (str): The imputation mode to use. Must be either 'mean' or 'median'.
+    impute_mode (str): The imputation mode to use. Must be either 'mean', 'median' or 'value'.
     
     Returns:
     pd.DataFrame: The DataFrame with the imputed column.
@@ -24,7 +24,7 @@ def impute_column(df: pd.DataFrame, column_name: str, impute_mode: str) -> pd.Da
 
     # Check that the impute_mode is valid
     if impute_mode not in ['mean', 'median']:
-        raise ValueError(f'{impute_mode} is not a valid impute_mode (must be mean or median)')
+        raise ValueError(f'{impute_mode} is not a valid impute_mode')
  
     if impute_mode == 'mean':
         # Impute missing values with the mean of the column
@@ -33,7 +33,7 @@ def impute_column(df: pd.DataFrame, column_name: str, impute_mode: str) -> pd.Da
     if impute_mode == 'median':
         # Impute missing values with the median of the column
         df[column_name].fillna(df[column_name].median(), inplace=True)
-    
+
     return df
 
 def remove_columns(df: pd.DataFrame, columns_to_remove: list[str]) -> pd.DataFrame:
@@ -179,6 +179,3 @@ def reorder_columns(df: pd.DataFrame, new_order: list[str]) -> pd.DataFrame:
     df = df[new_order]
     
     return df
-
-
-
