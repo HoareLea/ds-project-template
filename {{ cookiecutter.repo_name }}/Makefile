@@ -3,6 +3,8 @@
 .PHONY: install
 install:
 	pip install -U pip setuptools wheel
-	pip install -e
-	pre-commit install
+	pip install -e .
+	pip install -r requirements.txt
+
+
 
