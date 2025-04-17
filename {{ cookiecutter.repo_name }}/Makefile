@@ -1,21 +1,20 @@
 # Makefile for {{cookiecutter.project_name}}
 
-.PHONY: install
-install:
-	# Initialize git repository
-	git init 
-	# Install uv
-	pip install uv 
-	# Build the project
-	uv build
-	# Install dependencies, create venv
-	uv sync 
+SHELL := /bin/bash
+
+.PHONY: setup
+setup:
+	# Initialise git
+	git init
+	
+	# Install uv globally
+	curl -LsSf https://astral.sh/uv/install.sh | sh
+
+	# Create a virtual environment and install dependencies (dev installed by default)
+	uv sync
+
 	# Install pre-commit hooks
-	pre-commit install 
-	# Add .env file
-	export $(grep -v '^#' .env | xargs)	
-	# Install local package in editable mode
-	uv pip install -e .
+	source .venv/bin/activate && pre-commit install
 
 {% if cookiecutter.azure_ml_project|lower in ['yes', 'y'] -%}
 
@@ -81,24 +80,8 @@ test: install
 	coverage run -m pytest
 	coverage report -m
 
-.PHONY: test-html
-test_html: test
-	python -m http.server --directory htmlcov/
-
-.PHONY: ruff-fix
-ruff-fix:
-	ruff check --fix
-	ruff format
-
-.PHONY: clean
-clean:
-	find . -type f -name "*.py[co]" -delete
-	find . -type d -name "__pycache__" -delete
-
-.PHONY: docker-clean
-docker-clean:
-	docker system prune
-
-.PHONY: docker-restart
-docker-restart:
-	sudo systemctl restart docker
+.PHONY: ruff
+ruff:
+	# Run ruff
+	uv run ruff format
+	
