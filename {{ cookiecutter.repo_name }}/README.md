@@ -37,7 +37,7 @@
 
 1. **Build project, create virtual environment (venv) and install dependencies using uv**:
    ```bash
-   make install
+   make setup
    ```
 
 2. **Activate venv
