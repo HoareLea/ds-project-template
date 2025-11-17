@@ -2,7 +2,8 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 from PIL import Image
-from {{ cookiecutter.package_name }}.utils.util import yaml2dict, set_hl_styles
+from {{ cookiecutter.package_name }}.utils.util import yaml2dict
+from utils import set_hl_styles
 
 import warnings
 
