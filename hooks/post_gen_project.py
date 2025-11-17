@@ -10,21 +10,22 @@ utils_dir = os.path.join(proj_path, "src", "{{cookiecutter.package_name}}", "uti
 
 # Remove unnecessary app templates
 if include_streamlit_app.lower() not in ['yes', 'y']:
-    shutil.rmtree(os.path.join(proj_path, 'packages', 'app_streamlit'))
+    shutil.rmtree(os.path.join(proj_path, 'app_streamlit'))
     shutil.rmtree(os.path.join(proj_path, 'assets'))
     shutil.rmtree(os.path.join(proj_path, '.streamlit'))
 
 if include_fastapi_app.lower() not in ['yes', 'y']:
-    shutil.rmtree(os.path.join(proj_path, 'packages', 'app_fastapi'))
+    shutil.rmtree(os.path.join(proj_path, 'app_fastapi'))
 
 if azure_ml_project.lower() not in ['yes', 'y']:
-    shutil.rmtree(os.path.join(proj_path, 'packages', 'azureml'))
+    shutil.rmtree(os.path.join(proj_path, 'azureml'))
     os.remove(os.path.join(proj_path, 'data', '.gitkeep'))
 else:
     shutil.rmtree(os.path.join(proj_path, 'data', '01_raw'))
     shutil.rmtree(os.path.join(proj_path, 'data', '02_intermediate'))
     shutil.rmtree(os.path.join(proj_path, 'data', '03_model_input'))
     shutil.rmtree(os.path.join(proj_path, 'data', '04_model_output'))
+    os.remove(os.path.join(utils_dir, "azure_ml.py"))
 
 # Remove unnecessary utility functions
 if "{{cookiecutter.database_type}}" == 'none':
