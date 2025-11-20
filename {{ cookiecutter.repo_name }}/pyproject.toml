@@ -7,50 +7,48 @@ requires-python = ">={{ cookiecutter.minimum_python_version }}"
 dependencies = [
 
   # Global dependencies
+  "python-dotenv",
   "PyYAML",
 
   # Conditional dependencies
+  {% if cookiecutter.azure_ml_project|lower in ['yes', 'y'] -%}
+  "azure-ai-ml",
+  "azure-identity",
+  {% endif -%}
   {% if cookiecutter.database_type == 'postgres' -%}
   "psycopg2-binary",
   {% elif cookiecutter.database_type == 'mysql' -%}
   "mysql-connector-python",
   {% endif -%}
-
-  # Local packages
-  {% if cookiecutter.include_fastapi_app|lower in ['yes', 'y'] -%}
-  "app_fastapi",
-  {% endif -%}
-  {% if cookiecutter.include_streamlit_app|lower in ['yes', 'y'] -%}
-  "app_streamlit",
-  {% endif -%}
-  {% if cookiecutter.azure_ml_project|lower in ['yes', 'y'] -%}
-  "azureml",
-  {% endif -%}
-
 ]
 
 [dependency-groups]
 dev = [
-  "coverage",
+  "nbstripout",
+  "pre-commit",
   "pytest",
   "ruff",
-  "pre-commit",
 ]
 
-[tool.uv.sources]
+[project.optional-dependencies]
 {% if cookiecutter.include_fastapi_app|lower in ['yes', 'y'] -%}
-app_fastapi = { workspace = true}
+api = [
+  "fastapi",
+  "uvicorn"
+]
 {% endif -%}
 {% if cookiecutter.include_streamlit_app|lower in ['yes', 'y'] -%}
-app_streamlit = { workspace = true}
-{% endif -%}
-{% if cookiecutter.azure_ml_project|lower in ['yes', 'y'] -%}
-azureml = { workspace = true}
+streamlit = [
+  "numpy",
+  "plotly",
+  "streamlit",
+  "streamlit-authenticator"
+]
 {% endif -%}
 
-[tool.uv.workspace]
-members = ["packages/*"]
+[tool.setuptools.packages.find]
+where = ["src/"]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"

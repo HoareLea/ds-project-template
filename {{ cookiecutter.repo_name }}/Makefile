@@ -11,7 +11,7 @@ setup:
 	curl -LsSf https://astral.sh/uv/install.sh | sh
 
 	# Create a virtual environment and install dependencies (dev installed by default)
-	uv sync
+	uv sync --all-extras
 
 	# Install pre-commit hooks
 	source .venv/bin/activate && pre-commit install
@@ -24,11 +24,7 @@ data-sync-raw:
 
 .PHONY: aml-env-build
 aml-env-build:
-	docker build \
-	-f Dockerfile \
-	--target azureml \
-	-t {{cookiecutter.repo_name}}_env \
-	.
+	docker build -f azureml/Dockerfile -t {{cookiecutter.repo_name}}_env .
 
 .PHONY: aml-env-push
 aml-env-push:
@@ -40,11 +36,7 @@ aml-env-push:
 
 .PHONY: streamlit-build
 streamlit-build:
-	docker build \
-		-f Dockerfile \
-		--target streamlit \
-		-t {{cookiecutter.repo_name}}_webapp \
-		.
+	docker build -f app_streamlit/Dockerfile -t {{cookiecutter.repo_name}}_webapp .
 
 .PHONY: streamlit-run
 streamlit-run:
@@ -59,11 +51,7 @@ kill-streamlit:
 
 .PHONY: fastapi-build
 fastapi-build:
-	docker build \
-		-f Dockerfile \
-		--target fastapi \
-		-t {{cookiecutter.repo_name}}_api \
-		.
+	docker build -f app_fastapi/Dockerfile -t {{cookiecutter.repo_name}}_api .
 
 .PHONY: fastapi-run
 fastapi-run:
@@ -75,10 +63,13 @@ kill-fastapi:
 
 {% endif -%}
 
+.PHONY: clean
+clean:
+	docker system prune
+
 .PHONY: test
 test: install
-	coverage run -m pytest
-	coverage report -m
+	uv run pytest
 
 .PHONY: ruff
 ruff:

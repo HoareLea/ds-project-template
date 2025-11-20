@@ -1,0 +1,9 @@
+/* Set regular text font to Lato */
+.stApp body, .stApp div, .stApp p, .stApp span, .stApp li, .stApp a, .stApp label, .stApp input, .stApp button, .stApp textarea, .stApp select {
+    font-family: 'Lato', sans-serif;
+}
+
+/* Set headers to Grueber */
+.stApp h1, .stApp h2, .stApp h3, .stApp h4, .stApp h5, .stApp h6 {
+    font-family: 'Grueber', sans-serif;
+}
