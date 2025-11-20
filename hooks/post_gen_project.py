@@ -25,6 +25,7 @@ else:
     shutil.rmtree(os.path.join(proj_path, 'data', '02_intermediate'))
     shutil.rmtree(os.path.join(proj_path, 'data', '03_model_input'))
     shutil.rmtree(os.path.join(proj_path, 'data', '04_model_output'))
+    os.remove(os.path.join(utils_dir, "azure_ml.py"))
 
 # Remove unnecessary utility functions
 if "{{cookiecutter.database_type}}" == 'none':

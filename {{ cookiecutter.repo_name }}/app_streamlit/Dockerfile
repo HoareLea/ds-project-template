@@ -1,20 +1,32 @@
-FROM python:3.9-slim-buster
+FROM python:3.10-slim-bookworm
 
+# The installer requires curl (and certificates) to download the release archive
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
+
+# Download the latest installer
+ADD https://astral.sh/uv/install.sh /uv-installer.sh
+
+# Run the installer then remove it
+RUN sh /uv-installer.sh && rm /uv-installer.sh
+
+# Ensure the installed binary is on the `PATH`
+ENV PATH="/root/.local/bin/:$PATH"
+
+# Set the working directory
 WORKDIR /app
 
-RUN pip install -U pip setuptools wheel
-
+# Copy the relevant files into the image
+COPY conf conf
 COPY src src
-COPY assets assets
 COPY pyproject.toml pyproject.toml
-RUN pip install .
-
-COPY app_streamlit/requirements.txt requirements.txt
-RUN pip install -r requirements.txt
-
-COPY .streamlit .streamlit
 COPY app_streamlit/app.py app.py
+COPY app_streamlit/utils.py utils.py
+COPY app_streamlit/style.css style.css
+COPY .streamlit .streamlit
+COPY assets assets
 
-EXPOSE 8501
+# Sync the project into a new environment
+RUN uv sync --no-dev --extra streamlit
 
-CMD ["streamlit", "run", "app.py"]
+# Run the app
+CMD ["uv", "run", "streamlit", "run", "app.py"]

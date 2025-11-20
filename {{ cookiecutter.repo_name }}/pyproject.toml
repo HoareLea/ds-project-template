@@ -1,18 +1,17 @@
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "{{ cookiecutter.package_name }}"
 version = "0.0.1"
 description = "{{ cookiecutter.description }}"
-authors = [
-  { name = "{{ cookiecutter.author_name }}" }
-]
+authors = [{ name = "{{ cookiecutter.author_name }}" }]
+requires-python = ">={{ cookiecutter.minimum_python_version }}"
 dependencies = [
-  "PyYAML",
+
+  # Global dependencies
   "python-dotenv",
-  {% if cookiecutter.azure_ml_project|lower in ['y', 'yes'] -%}
+  "PyYAML",
+
+  # Conditional dependencies
+  {% if cookiecutter.azure_ml_project|lower in ['yes', 'y'] -%}
   "azure-ai-ml",
   "azure-identity",
   {% endif -%}
@@ -21,34 +20,35 @@ dependencies = [
   {% elif cookiecutter.database_type == 'mysql' -%}
   "mysql-connector-python",
   {% endif -%}
+]
 
+[dependency-groups]
+dev = [
+  "nbstripout",
+  "pre-commit",
+  "pytest",
+  "ruff",
 ]
 
 [project.optional-dependencies]
-dev = [
-  "black",
-  "coverage",
-  "flake8",
-  "pyproject-flake8",
-  "pre-commit",
-  "pytest",
+{% if cookiecutter.include_fastapi_app|lower in ['yes', 'y'] -%}
+api = [
+  "fastapi",
+  "uvicorn"
 ]
+{% endif -%}
+{% if cookiecutter.include_streamlit_app|lower in ['yes', 'y'] -%}
+streamlit = [
+  "numpy",
+  "plotly",
+  "streamlit",
+  "streamlit-authenticator"
+]
+{% endif -%}
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["src/"]
 
-[tool.black]
-line-length = 88
-
-[tool.flake8]
-ignore = ["D203", "W503"]
-max-complexity = 9
-max-line-length = 88
-extend-ignore = ["E203"]
-exclude = [
-    "__pycache__",
-    "venv",
-    ".venv"
-]
-
-[tool.nbstripout]
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
