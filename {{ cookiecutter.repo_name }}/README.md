@@ -40,7 +40,7 @@
    make setup
    ```
 
-2. **Activate venv
+2. **Activate virtual environment**:
    ```bash
    source .venv/bin/activate
    ```
