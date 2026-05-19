@@ -3,6 +3,7 @@
     "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
     "package_name": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
     "minimum_python_version": "3.10",
+    "include_codex_scaffolding": "yes",
     "include_streamlit_app": "yes",
     "include_fastapi_app": "yes",
     "azure_ml_project": "yes",
