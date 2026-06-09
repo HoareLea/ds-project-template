@@ -1,7 +1,7 @@
 import os
 import shutil
 
-include_codex_scaffolding = "{{cookiecutter.include_codex_scaffolding}}"
+include_agent_scaffolding = "{{cookiecutter.include_agent_scaffolding}}"
 include_streamlit_app = "{{cookiecutter.include_streamlit_app}}"
 include_fastapi_app = "{{cookiecutter.include_fastapi_app}}"
 azure_ml_project = "{{cookiecutter.azure_ml_project}}"
@@ -9,9 +9,11 @@ azure_ml_project = "{{cookiecutter.azure_ml_project}}"
 proj_path = os.getcwd()
 utils_dir = os.path.join(proj_path, "src", "{{cookiecutter.package_name}}", "utils")
 
-# Remove Codex scaffolding if not selected
-if include_codex_scaffolding.lower() not in ['yes', 'y']:
+# Remove agent scaffolding if not selected
+if include_agent_scaffolding.lower() not in ['yes', 'y']:
     os.remove(os.path.join(proj_path, 'AGENTS.md'))
+    os.remove(os.path.join(proj_path, 'CONTEXT.md'))
+    shutil.rmtree(os.path.join(proj_path, 'docs'))
     shutil.rmtree(os.path.join(proj_path, 'tasks'))
 
 # Remove unnecessary app templates

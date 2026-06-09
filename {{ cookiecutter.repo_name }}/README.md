@@ -4,8 +4,9 @@
 ## Project Structure
 ```
 ├── .env                   <- Local config and secrets that should not be stored in source control.
-{% if cookiecutter.include_codex_scaffolding in ['yes', 'y', 'YES', 'Y'] -%}
-├── AGENTS.md              <- Repo-local Codex instructions for this project.
+{% if cookiecutter.include_agent_scaffolding in ['yes', 'y', 'YES', 'Y'] -%}
+├── AGENTS.md              <- Repo-local agent instructions for this project.
+├── CONTEXT.md             <- Domain context for agents and contributors.
 {% endif -%}
 ├── Makefile               <- Makefile with useful commands for project setup and running analysis.
 ├── README.md              <- The top-level README for developers using this project.
@@ -23,6 +24,10 @@
 ├── pyproject.toml         <- Project metadata and dependencies.
 ├── .python-version        <- Specifies the version of Python to use
 ├── references             <- Data dictionaries, manuals, and all other explanatory materials.
+{% if cookiecutter.include_agent_scaffolding in ['yes', 'y', 'YES', 'Y'] -%}
+├── docs
+│   └── adr                <- Architecture decision records.
+{% endif -%}
 ├── src                    <- Source code for use in this project.
 │   └── {{ cookiecutter.package_name }}
 │       ├── __init__.py    <- Make {{ cookiecutter.package_name }} a Python module.
@@ -31,8 +36,8 @@
 │       ├── model          <- Scripts to train models and make predictions.
 │       ├── utils          <- Utility functions.
 │       └── visualization  <- Scripts to create exploratory and results-oriented visualizations.
-{% if cookiecutter.include_codex_scaffolding in ['yes', 'y', 'YES', 'Y'] -%}
-├── tasks                  <- Repo-local task tracking, lessons, and decisions for substantial Codex work.
+{% if cookiecutter.include_agent_scaffolding in ['yes', 'y', 'YES', 'Y'] -%}
+├── tasks                  <- Repo-local session scratchpad and lessons.
 {% endif -%}
 └── tests                  <- Tests for functions in src.
 ```
@@ -61,19 +66,24 @@
 Much of the codebase is reliant on environment variables. Set any relevant variables in the `.env` file.
 **Please Note: You can define secrets in `.env` but note that any variables passed in the definition of an Azure ML command job will be exposed. In this case, use Key Vault.**
 
-{% if cookiecutter.include_codex_scaffolding in ['yes', 'y', 'YES', 'Y'] -%}
-### Codex Support Files
+{% if cookiecutter.include_agent_scaffolding in ['yes', 'y', 'YES', 'Y'] -%}
+### Agent Support Files
 
-This project includes optional repo-local Codex scaffolding:
+This project includes optional repo-local agent scaffolding:
 
-- `AGENTS.md`: project-specific Hoare Lea instructions that complement any global `~/.codex` settings
-- `tasks/todo.md`: a lightweight plan/progress file for substantial tasks
+- `AGENTS.md`: project-specific Hoare Lea operating instructions for agents
+- `CONTEXT.md`: project domain vocabulary, invariants, workflows, and data assumptions
+- `docs/adr/README.md`: ADR purpose and starter template
+- `tasks/todo.md`: an ephemeral plan/progress scratchpad for substantial active work
 - `tasks/lessons.md`: repo-specific lessons and recurring gotchas
-- `tasks/decisions.md`: notable architectural, modelling, or workflow decisions
 
-If you plan to use Codex in this repo, update `AGENTS.md` early and replace the placeholder sections with the real project context, datasets, outputs, constraints, and any important local conventions.
+Optional agent workflow setup: this template can be paired with external engineering-skill packs for agents. One compatible setup skill is `setup-matt-pocock-skills`, which creates repo-local workflow config for issue trackers, triage labels, and domain docs. If your agent environment provides that skill, run it after generation when you want those workflow docs. If not, skip this step; the repo still works with the baseline `AGENTS.md`, `CONTEXT.md`, ADRs, and task files.
 
-These files make the repo more self-contained when used across machines with different Codex global configuration.
+Use `AGENTS.md` for repo operating instructions and `CONTEXT.md` for domain truth. ADRs in `docs/adr/` are the durable decision record.
+
+Update `AGENTS.md` early with real setup commands, verification commands, project layout, operational risks, and local conventions. Put domain vocabulary, datasets, units, invariants, and business rules in `CONTEXT.md`.
+
+These files make the repo more self-contained when used across machines with different agent tooling.
 
 {% endif -%}
 
